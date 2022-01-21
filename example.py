@@ -5,7 +5,6 @@ import tkinter.scrolledtext as tksc
 from tkinter import filedialog
 from tkinter.filedialog import asksaveasfilename
 
-
 #   to use the new button as needed
 def do_command(command):
     global command_textbox
@@ -19,11 +18,13 @@ def do_command(command):
     cmd_results, cmd_errors = p.communicate()
     command_textbox.insert(tk.END, cmd_results)
     command_textbox.insert(tk.END, cmd_errors)
+
 root = tk.Tk()
 frame = tk.Frame(root)
 frame.pack()
 
 # set up button to run the do_command function
+# Makes the command button pass it's name to a function using lambda
 ping_btn = tk.Button(frame, text="Check to see if a URL is up and active", command=lambda:do_command("ping"))
 ping_btn.pack()
 
@@ -53,8 +54,22 @@ url_entry.pack(side=tk.LEFT)
 # Adds an output box to GUI.
 command_textbox = tksc.ScrolledText(frame, height=10, width=100)
 command_textbox.pack()
-
 frame = tk.Frame(root,  bg="black") # change frame color
 frame.pack()
+
+# Save function.
+def mSave():
+    filename = asksaveasfilename(defaultextension='.txt', filetypes=(
+    ('Text files', '*.txt'), ('Python files', '*.py *.pyw'), ('All files', '*.*')))
+    if filename is None:
+        return
+    file = open(filename, mode='w')
+    text_to_save = command_textbox.get("1.0", tk.END)
+
+    file.write(text_to_save)
+    file.close()
+
+save_btn = tk.Button(frame, text="Click to save", command=lambda:do_command("mSave"))
+save_btn.pack()
 
 root.mainloop()
